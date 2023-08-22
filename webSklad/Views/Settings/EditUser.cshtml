@@ -1,0 +1,59 @@
+﻿@model webSklad.Models.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<section class="vh-100 bg-image"
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Edit user</h2>
+                            @using (Html.BeginForm("EditUser", "Settings", FormMethod.Post))
+                            {
+
+                                        <div class="validation-summary">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    </div>
+                                        <input type="hidden" asp-for="UserId" />
+
+                                     <div class="form-outline mb-4">
+                                            <label for="NameUser">Name:</label>
+                                    @Html.TextBoxFor(m => m.NameUser, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.NameUser, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                            <label for="SurnameUser">Surname:</label>
+                                    @Html.TextBoxFor(m => m.SurnameUser, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SurnameUser, "", new { @class = "text-danger" })
+                                    </div>
+
+                                     <div class="form-outline mb-4">
+                                                <label for="Email">Email:</label>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                            <label for="PhoneNumber">Phone Number:</label>
+                                    @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                                    </div>
+
+                                     <div class="d-flex justify-content-center">
+                                             <button class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit"> <i class="bi bi-save2"></i> </button>
+                                     </div>
+
+
+                            }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

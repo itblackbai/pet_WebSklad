@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using webSklad.Data;
+using webSklad.Interfaces;
 using webSklad.Models;
+using webSklad.Repository;
 
 namespace webSklad
 {
@@ -20,6 +22,11 @@ namespace webSklad
 
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<WebSkladContext>();
+
+
+            //Interfaces && Repository
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 
 
             builder.Services.Configure<IdentityOptions>(options =>
