@@ -21,6 +21,7 @@ namespace webSklad
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<WebSkladContext>();
 
+
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
