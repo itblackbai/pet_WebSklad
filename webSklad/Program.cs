@@ -34,6 +34,21 @@ namespace webSklad
 
             var app = builder.Build();
 
+            //Seed data
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<WebSkladContext>();
+                    SeedData.Initialize(context, services);
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

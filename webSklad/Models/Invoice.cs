@@ -37,5 +37,9 @@ namespace webSklad.Models
         [ForeignKey("ShopFopId")]
         public int? ShopFopId { get; set; }
         public Fop ShopFop { get; set; }
+
+
+        public string? UserInvoiceId { get; set; } 
+        public User User { get; set; } 
     }
 }
