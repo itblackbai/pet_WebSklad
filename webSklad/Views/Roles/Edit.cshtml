@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Identity
+@{
+    Layout = "_Layout";
+}
+
+@model webSklad.Models.ViewModels.ChangeRoleViewModel
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Give Roles to @Model.UserEmail</h4>
+                </div>
+                <div class="card-body text-center">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" name="userId" value="@Model.UserId" />
+                        <div class="form-group">
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                                @foreach (IdentityRole role in Model.AllRoles)
+                                {
+                                    <div class="form-check mb-2">
+                                        <input type="checkbox" name="roles" id="@role.Name" value="@role.Name"
+                                        @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") class="form-check-input" />
+                                        <label for="@role.Name" class="form-check-label">@role.Name</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-success btn-lg gradient-custom-4 text-body">Give New Roles</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
