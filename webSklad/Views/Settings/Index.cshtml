@@ -1,0 +1,221 @@
+﻿@using System.Security.Claims
+@model Tuple<List<User>, List<ShopPostInfo>>
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div style="text-align: center;">
+    <div class="d-flex justify-content-center">
+        <h4 class="mb-3 mt-3">Settings</h4>
+    </div>
+
+    <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="Settings" asp-action="EditMyInfo">  <i class="bi bi-pencil-square"></i>  Change my info</a>
+    @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
+    {
+        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="Settings" asp-action="CreateWorker"><i class="bi bi-person-add"></i>Add worker</a>
+        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="ShopPostInfo" asp-action="CreateShopPostInfo" asp-route-type="shopinfo"><i class="bi bi-shop-window"></i>Add new shop</a>
+        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="ShopPostInfo" asp-action="CreateShopPostInfo" asp-route-type="postinfo"><i class="bi bi-people-fill"></i>Add new suplier</a>
+    }
+
+</div>
+
+<div class="d-flex justify-content-center">
+    <h4 class="mb-3 mt-3">Worker list</h4>
+</div>
+
+
+<hr>
+<div class="table-editor" id="table_1" data-entries="5" data-entries-options="[5, 10, 15]">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="th-sm" data-width="250">Email</th>
+                <th class="th-sm" data-width="250">Name</th>
+                <th class="th-sm" data-width="250">Surname</th>
+                <th class="th-sm" data-width="250">Phone number</th>
+                <th class="th-sm" data-width="250" data-sort="false">Email</th>
+                <th class="th-sm" data-width="250" data-sort="false"></th>
+                <th class="th-sm" data-width="250" data-sort="false"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var worker in Model.Item1)
+            {
+                <tr>
+                    <td>@worker.Email</td>
+                    <td>@worker.NameUser</td>
+                    <td>@worker.SurnameUser</td>
+                    <td>@worker.PhoneNumber</td>
+                    @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
+                    {
+                        <td>
+                            <a href="@Url.Action("EditUser", "Settings", new { userId = worker.Id })" class="btn btn-primary">
+                                <i class="bi bi-pencil-square"></i> Edit worker
+                            </a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Settings", new { userId = worker.Id })" class="btn btn-primary">
+                                <i class="bi bi-person-up"></i> Change worker role
+                            </a>
+                        </td>
+                        <td>
+                            <form asp-action="DeleteUser" asp-route-userId="@worker.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Delete worker
+                                </button>
+                            </form>
+                        </td>
+
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    @foreach (var shopGroup in Model.Item2.GroupBy(shopPostInfo => shopPostInfo.Type))
+    {
+
+        <h2 hidden>@shopGroup.Key</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Адреса</th>
+                    <th></th>
+                    <th> </th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+                {
+                    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                }
+
+                @foreach (var shopPostInfo in shopGroup)
+                {
+                    <tr>
+                        <td>@shopPostInfo.Name</td>
+
+                        @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
+                        {
+                            <td>
+                                <form asp-action="DeleteShopPostInfo" asp-route-id="@shopPostInfo.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Видалити магазин</button>
+                                </form>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("EditShopPostInfo", "ShopPostInfo", new { id = shopPostInfo.Id })" class="btn btn-primary">Редагувати магазин</a>
+                            </td>
+                        }
+                        <td>
+                            <button class="toggle-button">Показати</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="toggleable">
+                            @if (shopPostInfo.FOPS.Any())
+                            {
+                                <div class="fop-details" style="display: none;">
+                                    <h3>Фопи</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Ім'я</th>
+                                                <th>Номер телефону</th>
+                                                <th>Рахунок</th>
+                                                <th>Код</th>
+                                                <th>МФО</th>
+                                                <th>ІПН</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var fop in shopPostInfo.FOPS)
+                                            {
+                                                <tr>
+                                                    <td>@fop.NameOfFop</td>
+                                                    <td>@fop.PhoneNumberOfFop</td>
+                                                    <td>@fop.FopIPN</td>
+                                                    <td>@fop.FopCODE</td>
+                                                    <td>@fop.FopMFO</td>
+                                                    <td>@fop.Account</td>
+                                                    <td>
+                                                        @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
+                                                        {
+                                                            <a href="@Url.Action("EditFOP", "ShopPostInfo", new { id = fop.Id })" class="btn btn-primary">Редагувати фопа</a>
+                                                            <form asp-controller="ShopPostInfo" asp-action="DeleteFOP" asp-route-fopId="@fop.Id" method="post" style="display:inline;">
+                                                                <button type="submit" class="btn btn-danger">Видалити фопа</button>
+                                                            </form>
+                                                        }
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <span>Фопів не додано</span>
+                            }
+                            @if (shopPostInfo.SalesRepresentatives != null && shopPostInfo.SalesRepresentatives.Any())
+                            {
+                                <div class="fop-details" style="display: none;">
+                                    <h3>Торгові представники</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Ім'я</th>
+                                                <th>Прізвище</th>
+                                                <th>Номер телефону</th>
+                                                <th>Email</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var sr in shopPostInfo.SalesRepresentatives)
+                                            {
+                                                <tr>
+                                                    <td>@sr.SRName</td>
+                                                    <td>@sr.SRSurname</td>
+                                                    <td>@sr.SRPhoneNumber</td>
+                                                    <td>@sr.SREmail</td>
+                                                    <td>
+                                                        @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
+                                                        {
+                                                            <a href="@Url.Action("EditSR", "ShopPostInfo", new { id = sr.Id })" class="btn btn-primary">Редагувати фопа</a>
+                                                            <form asp-controller="ShopPostInfo" asp-action="DeleteSR" asp-route-srId="@sr.Id" method="post" style="display:inline;">
+                                                                <button type="submit" class="btn btn-danger">Видалити торгового представниика</button>
+                                                            </form>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @section Scripts {
+        <script>
+            $(function () {
+                $('.toggle-button').click(function () {
+                    $(this).closest('tr').next().find('.fop-details').toggle();
+                });
+            });
+        </script>
+    }
+
