@@ -166,9 +166,6 @@ namespace webSklad.Controllers
                 }
 
                 var createdByUserId = currentUser.CreatedByUserId;
-
-               // var createdByUser = await _userManager.FindByIdAsync(createdByUserId);
-
                 var createdByUser = await _userRepository.GetCurrentUserCreatedByUserAsync();
 
                 if (createdByUser == null)
