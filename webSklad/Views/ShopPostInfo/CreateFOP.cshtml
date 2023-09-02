@@ -1,0 +1,122 @@
+﻿@model webSklad.Models.ViewModels.CreateFOPViewModel
+
+<div class="text-center">
+    <h2>Create FOP</h2>
+</div>
+
+<div class="d-flex justify-content-center">
+    <button id="addFopButton" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+        <i class="bi bi-file-earmark-plus"></i>
+        Add New FOP
+    </button>
+    <button id="saveButton" class="btn btn-success btn-lg gradient-custom-4 text-body">
+        <i class="bi bi-save2"></i> Save
+    </button>
+</div>
+
+
+<form id="fopForm" asp-action="CreateFOP" method="post">
+    <input type="hidden" name="ShopPostInfoId" value="@Model.ShopPostInfoId" />
+
+
+    <div id="fopFormsContainer">
+        <!-- The container where new FOP fields will be added -->
+    </div>
+
+
+</form>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var addButton = document.getElementById("addFopButton");
+        var saveButton = document.getElementById("saveButton");
+        var container = document.getElementById("fopFormsContainer");
+        var formIndex = 0;
+
+        addButton.addEventListener("click", function () {
+            var fieldHtml = `
+
+               <section class="vh-100">
+                <div class="container">
+                    <div class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                            <div class="card" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <h2 class="text-uppercase text-center mb-5">New fop</h2>
+
+
+                                        <div class="validation-summary">
+                                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                            </div>
+
+                                             <div class="form-outline mb-4">
+                                                    <label for="FullOfFop_${formIndex}">Full Name of FOP</label>
+                                                    <input type="text" name="Fops[${formIndex}].FullOfFop" class="form-control" id="FullOfFop_${formIndex}" />
+                                            </div>
+                                             <div class="form-outline mb-4">
+                                                    <label for="PhoneNumberOfFop_${formIndex}">Phone Number of FOP</label>
+                                                    <input type="text" name="Fops[${formIndex}].PhoneNumberOfFop" class="form-control" id="PhoneNumberOfFop_${formIndex}" />
+                                            </div>
+                                             <div class="form-outline mb-4">
+                                                    <label for="FopIPN_${formIndex}">FOP IPN</label>
+                                                    <input type="text" name="Fops[${formIndex}].FopIPN" class="form-control" id="FopIPN_${formIndex}" />
+                                            </div>
+                                             <div class="form-outline mb-4">
+                                                    <label for="FopMFO_${formIndex}">FOP MFO</label>
+                                                    <input type="text" name="Fops[${formIndex}].FopMFO" class="form-control" id="FopMFO_${formIndex}" />
+                                            </div>
+                                             <div class="form-outline mb-4">
+                                                    <label for="FopCODE_${formIndex}">FOP Code</label>
+                                                    <input type="text" name="Fops[${formIndex}].FopCODE" class="form-control" id="FopCODE_${formIndex}" />
+                                            </div>
+                                             <div class="form-outline mb-4">
+                                                    <label for="Account_${formIndex}">Account</label>
+                                                    <input type="text" name="Fops[${formIndex}].Account" class="form-control" id="Account_${formIndex}" />
+                                            </div>
+                                             <div class="form-outline mb-4">
+                                                    <label for="Adress_${formIndex}">Adress</label>
+                                                    <input type="text" name="Fops[${formIndex}].Adress" class="form-control" id="Adress_${formIndex}" />
+                                            </div>
+
+                                            <div class="d-flex justify-content-center">
+                                                <button class="btn btn-danger remove-button" type="button">
+                                                    <i class="bi bi-trash"></i> Remove
+                                                </button>
+                                            </div>
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+
+                `;
+
+            var fieldContainer = document.createElement("div");
+            fieldContainer.innerHTML = fieldHtml;
+            container.appendChild(fieldContainer);
+
+            formIndex++;
+        });
+
+        container.addEventListener("click", function (event) {
+            if (event.target && event.target.classList.contains("remove-button")) {
+                var formContainer = event.target.closest(".vh-100");
+                if (formContainer) {
+                    formContainer.remove();
+                }
+            }
+        });
+
+
+        saveButton.addEventListener("click", function () {
+            document.getElementById("fopForm").submit();
+        });
+    });
+</script>

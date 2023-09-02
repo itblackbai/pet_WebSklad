@@ -9,6 +9,7 @@
         public string? FopMFO { get; set; }
         public string? FopCODE { get; set; }
         public string? Account { get; set; }
+        public string? Address { get; set; }
 
 
         //Connections

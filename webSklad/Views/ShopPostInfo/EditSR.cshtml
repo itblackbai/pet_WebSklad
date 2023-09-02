@@ -1,0 +1,60 @@
+﻿@model webSklad.Models.ViewModels.EDITSRViewModel
+
+
+<section class="vh-100 bg-image"
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+
+                           <h2 class="text-uppercase text-center mb-5">Edit SalesRepresentatives</h2>
+
+                            <form asp-action="EditSR">
+
+                                    <div class="validation-summary">
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <input type="hidden" asp-for="Id" />
+
+                                    <div class="form-outline mb-4">
+                                    <label for="SRName">SRName:</label>
+                                    @Html.TextBoxFor(m => m.SRName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SRName, "", new { @class = "text-danger" })
+                                    </div>
+
+                                      <div class="form-outline mb-4">
+                                    <label for="SRSurname">SRSurname:</label>
+                                    @Html.TextBoxFor(m => m.SRSurname, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SRSurname, "", new { @class = "text-danger" })
+                                    </div>
+
+                                      <div class="form-outline mb-4">
+                                    <label for="SREmail">SREmail:</label>
+                                    @Html.TextBoxFor(m => m.SREmail, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SREmail, "", new { @class = "text-danger" })
+                                    </div>
+
+                                      <div class="form-outline mb-4">
+                                    <label for="SRPhoneNumber">SRPhoneNumber:</label>
+                                    @Html.TextBoxFor(m => m.SRPhoneNumber, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SRPhoneNumber, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+                                            <i class="bi bi-arrow-right-circle"></i>
+                                        </button>
+                                    </div>
+
+                            </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

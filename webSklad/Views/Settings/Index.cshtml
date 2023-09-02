@@ -5,38 +5,55 @@
     ViewData["Title"] = "Settings";
 }
 
+
 <div style="text-align: center;">
     <div class="d-flex justify-content-center">
         <h4 class="mb-3 mt-3">Settings</h4>
     </div>
 
-    <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="Settings" asp-action="EditMyInfo">  <i class="bi bi-pencil-square"></i>  Change my info</a>
+    <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="Settings" asp-action="EditMyInfo">
+        <i class="bi bi-pencil-square"></i> Change my info
+    </a>
     @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
     {
-        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="Settings" asp-action="CreateWorker"><i class="bi bi-person-add"></i>Add worker</a>
-        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="ShopPostInfo" asp-action="CreateShopPostInfo" asp-route-type="shopinfo"><i class="bi bi-shop-window"></i>Add new shop</a>
-        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="ShopPostInfo" asp-action="CreateShopPostInfo" asp-route-type="postinfo"><i class="bi bi-people-fill"></i>Add new suplier</a>
+        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="Settings" asp-action="CreateWorker">
+            <i class="bi bi-person-add"></i> Add worker
+        </a>
+        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="ShopPostInfo" asp-action="CreateShopPostInfo" asp-route-type="shopinfo">
+            <i class="bi bi-shop-window"></i> Add new shop
+        </a>
+        <a class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" asp-controller="ShopPostInfo" asp-action="CreateShopPostInfo" asp-route-type="postinfo">
+            <i class="bi bi-people-fill"></i> Add new supplier
+        </a>
     }
-
 </div>
+
 
 <div class="d-flex justify-content-center">
     <h4 class="mb-3 mt-3">Worker list</h4>
 </div>
 
+<div class="d-flex justify-content-end mb-4">
+    <div class="input-group">
+        <span class="input-group-text clear-search" id="clearSearchButton">
+            <i class="bi bi-x-circle"></i>
+        </span>
+        <input type="text" id="searchInputworker" class="form-control" placeholder="Search by name, surname, email" />
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+    </div>
+</div>
 
-<hr>
+
 <div class="table-editor" id="table_1" data-entries="5" data-entries-options="[5, 10, 15]">
-    <table class="table">
+
+    <table class="table" id="workerListTable">
         <thead>
             <tr>
-                <th class="th-sm" data-width="250">Email</th>
-                <th class="th-sm" data-width="250">Name</th>
-                <th class="th-sm" data-width="250">Surname</th>
-                <th class="th-sm" data-width="250">Phone number</th>
-                <th class="th-sm" data-width="250" data-sort="false">Email</th>
-                <th class="th-sm" data-width="250" data-sort="false"></th>
-                <th class="th-sm" data-width="250" data-sort="false"></th>
+                <th class="th-sm" style="width: 25%">Email</th>
+                <th class="th-sm" style="width: 25%">Name</th>
+                <th class="th-sm" style="width: 25%">Surname</th>
+                <th class="th-sm" style="width: 25%">Phone number</th>
+                <th class="th-sm" style="width: 10%" data-sort="false">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -47,91 +64,140 @@
                     <td>@worker.NameUser</td>
                     <td>@worker.SurnameUser</td>
                     <td>@worker.PhoneNumber</td>
-                    @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
-                    {
-                        <td>
-                            <a href="@Url.Action("EditUser", "Settings", new { userId = worker.Id })" class="btn btn-primary">
-                                <i class="bi bi-pencil-square"></i> Edit worker
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@Url.Action("Edit", "Settings", new { userId = worker.Id })" class="btn btn-primary">
-                                <i class="bi bi-person-up"></i> Change worker role
-                            </a>
-                        </td>
-                        <td>
-                            <form asp-action="DeleteUser" asp-route-userId="@worker.Id" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i> Delete worker
-                                </button>
-                            </form>
-                        </td>
-
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-
-
-    @foreach (var shopGroup in Model.Item2.GroupBy(shopPostInfo => shopPostInfo.Type))
-    {
-
-        <h2 hidden>@shopGroup.Key</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Ім'я</th>
-                    <th>Адреса</th>
-                    <th></th>
-                    <th> </th>
-                    <th> </th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
-                {
-                    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-                }
-
-                @foreach (var shopPostInfo in shopGroup)
-                {
-                    <tr>
-                        <td>@shopPostInfo.Name</td>
+                    <td class="text-right">
 
                         @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
                         {
-                            <td>
-                                <form asp-action="DeleteShopPostInfo" asp-route-id="@shopPostInfo.Id" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger">Видалити магазин</button>
+                            <div class="btn-group float-right">
+
+                                <a href="@Url.Action("EditUser", "Settings", new { userId = worker.Id })" class="btn btn-primary">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="@Url.Action("Edit", "Settings", new { userId = worker.Id })" class="btn btn-primary">
+                                    <i class="bi bi-person-up"></i>
+                                </a>
+                                <form asp-action="DeleteUser" asp-route-userId="@worker.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </form>
-                            </td>
-                            <td>
-                                <a href="@Url.Action("EditShopPostInfo", "ShopPostInfo", new { id = shopPostInfo.Id })" class="btn btn-primary">Редагувати магазин</a>
-                            </td>
+                            </div>
                         }
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination justify-content-center">
+            @if (Model.Item1.Count > 5)
+            {
+                <li class="page-item @((Model.Item1.Count <= 5) ? "disabled" : "")">
+                    <a class="page-link" href="#" id="previousWorkerPage">Back</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" id="nextWorkerPage">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+
+
+
+<div class="d-flex justify-content-center">
+    <h4 class="mb-3 mt-3">Shops and suppliers list</h4>
+</div>
+
+
+<div class="d-flex justify-content-end mb-4">
+    <div class="input-group">
+        <span class="input-group-text clear-search">
+            <i class="bi bi-x-circle" id="clearSearch"></i>
+        </span>
+        <input type="text" class="form-control" id="filterByName" placeholder="Search by name">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+    </div>
+</div>
+
+
+
+
+
+<div class="table-editor" id="table_1" data-entries="5" data-entries-options="[5, 10, 15]">
+
+    @foreach (var shopGroup in Model.Item2.GroupBy(shopPostInfo => shopPostInfo.Type))
+    {
+        string sectionName = shopGroup.Key == "postinfo" ? "Suppliers" : "Shops";
+        <div class="d-flex justify-content-center">
+            <h4 class="mb-3 mt-3">@sectionName</h4>
+        </div>
+        <table class="table" id="shopsListTable">
+            <thead>
+                <tr>
+                    <th class="th-sm" style="width: 3%" data-sort="false"></th>
+                    <th class="th-sm" style="width: 97%">Name</th>
+                    <th class="th-sm" style="width: 10%" data-sort="false">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var shopPostInfo in shopGroup.Take(5))
+                {
+                    <tr>
                         <td>
-                            <button class="toggle-button">Показати</button>
+                            <button class="toggle-button"><i class="bi bi-menu-down"></i></button>
+                        </td>
+                        <td>@shopPostInfo.Name</td>
+                        <td class="text-right">
+
+                            @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
+                            {
+                                <div class="btn-group float-right">
+                                    <a href="@Url.Action("AddFop", "ShopPostInfo", new { id = shopPostInfo.Id })" class="btn btn-success">
+                                    <i class="bi bi-person-vcard"></i>
+                                    </a>
+
+                                    @if(shopPostInfo.Type == "postinfo")
+                                    {
+                                        <a href="@Url.Action("CreateSR", "ShopPostInfo", new { id = shopPostInfo.Id })" class="btn btn-success">
+                                            <i class="bi bi-person-vcard-fill"></i>
+                                        </a>
+                                    }
+
+                                    <a href="@Url.Action("EditShopPostInfo", "ShopPostInfo", new { id = shopPostInfo.Id })" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+
+                                    <form asp-controller="ShopPostInfo" asp-action="DeleteShopPostInfo" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@shopPostInfo.Id" />
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="toggleable">
+                        <td colspan="3" class="toggleable">
                             @if (shopPostInfo.FOPS.Any())
                             {
                                 <div class="fop-details" style="display: none;">
-                                    <h3>Фопи</h3>
-                                    <table>
+                                    <h3>Fops</h3>
+                                    <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Ім'я</th>
-                                                <th>Номер телефону</th>
-                                                <th>Рахунок</th>
-                                                <th>Код</th>
-                                                <th>МФО</th>
-                                                <th>ІПН</th>
-                                                <th></th>
-                                                <th></th>
+                                                <th class="th-sm" style="width: 15%">Name</th>
+                                                <th class="th-sm" style="width: 20%">Address</th>
+                                                <th class="th-sm" style="width: 15%">Phone number</th>
+                                                <th class="th-sm" style="width: 10%">IPN</th>
+                                                <th class="th-sm" style="width: 10%">MFO</th>
+                                                <th class="th-sm" style="width: 10%">CODE</th>
+                                                <th class="th-sm" style="width: 20%">Account</th>
+                                                <th class="th-sm" style="width: 10%" data-sort="false">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -139,20 +205,27 @@
                                             {
                                                 <tr>
                                                     <td>@fop.NameOfFop</td>
+                                                    <td>@fop.Address</td>
                                                     <td>@fop.PhoneNumberOfFop</td>
                                                     <td>@fop.FopIPN</td>
                                                     <td>@fop.FopCODE</td>
                                                     <td>@fop.FopMFO</td>
                                                     <td>@fop.Account</td>
-                                                    <td>
+                                                    <td class="text-right">
+
                                                         @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
                                                         {
-                                                            <a href="@Url.Action("EditFOP", "ShopPostInfo", new { id = fop.Id })" class="btn btn-primary">Редагувати фопа</a>
-                                                            <form asp-controller="ShopPostInfo" asp-action="DeleteFOP" asp-route-fopId="@fop.Id" method="post" style="display:inline;">
-                                                                <button type="submit" class="btn btn-danger">Видалити фопа</button>
-                                                            </form>
+                                                            <div class="btn-group float-right">
+                                                                <a href="@Url.Action("EditFOP", "ShopPostInfo", new { id = fop.Id })" class="btn btn-primary">
+                                                                    <i class="bi bi-pencil-square"></i>
+                                                                </a>
+                                                                <form asp-controller="ShopPostInfo" asp-action="DeleteFOP" asp-route-fopId="@fop.Id" method="post" style="display:inline;">
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         }
-
                                                     </td>
                                                 </tr>
                                             }
@@ -160,23 +233,18 @@
                                     </table>
                                 </div>
                             }
-                            else
-                            {
-                                <span>Фопів не додано</span>
-                            }
                             @if (shopPostInfo.SalesRepresentatives != null && shopPostInfo.SalesRepresentatives.Any())
                             {
                                 <div class="fop-details" style="display: none;">
-                                    <h3>Торгові представники</h3>
-                                    <table>
+                                    <h3>Sales Representatives</h3>
+                                    <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Ім'я</th>
-                                                <th>Прізвище</th>
-                                                <th>Номер телефону</th>
-                                                <th>Email</th>
-                                                <th></th>
-                                                <th></th>
+                                                <th class="th-sm" style="width: 25%">Name</th>
+                                                <th class="th-sm" style="width: 25%">Surname</th>
+                                                <th class="th-sm" style="width: 25%">Phone number</th>
+                                                <th class="th-sm" style="width: 25%">Email</th>
+                                                <th class="th-sm" style="width: 10%" data-sort="false">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -187,13 +255,20 @@
                                                     <td>@sr.SRSurname</td>
                                                     <td>@sr.SRPhoneNumber</td>
                                                     <td>@sr.SREmail</td>
-                                                    <td>
+                                                    <td class="text-right">
                                                         @if (User.IsInRole("ShopOwner") || (User.IsInRole("Executor")))
                                                         {
-                                                            <a href="@Url.Action("EditSR", "ShopPostInfo", new { id = sr.Id })" class="btn btn-primary">Редагувати фопа</a>
-                                                            <form asp-controller="ShopPostInfo" asp-action="DeleteSR" asp-route-srId="@sr.Id" method="post" style="display:inline;">
-                                                                <button type="submit" class="btn btn-danger">Видалити торгового представниика</button>
-                                                            </form>
+                                                            <div class="btn-group float-right">
+                                                                <a href="@Url.Action("EditSR", "ShopPostInfo", new { id = sr.Id })" class="btn btn-primary">
+                                                                    <i class="bi bi-pencil-square"></i>
+                                                                </a>
+                                                                <form asp-controller="ShopPostInfo" asp-action="DeleteSR" method="post" style="display:inline;">
+                                                                    <input type="hidden" name="srId" value="@sr.Id" />
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         }
                                                     </td>
                                                 </tr>
@@ -208,14 +283,123 @@
             </tbody>
         </table>
     }
+</div>
 
-    @section Scripts {
-        <script>
-            $(function () {
-                $('.toggle-button').click(function () {
-                    $(this).closest('tr').next().find('.fop-details').toggle();
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#filterByName").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#shopsListTable tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
             });
-        </script>
-    }
 
+            
+            $("#clearSearch").on("click", function () {
+               
+                location.reload();
+            });
+        });
+
+
+
+
+        $(function () {
+            $('.toggle-button').click(function () {
+                $(this).closest('tr').next().find('.fop-details').toggle();
+            });
+        });
+
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInputworker");
+            filter = input.value.toUpperCase();
+            table = document.querySelector(".table");
+            tr = table.getElementsByTagName("tr");
+
+            var displayedResults = 0; 
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                var rowDisplayed = false; 
+
+                for (var j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            rowDisplayed = true; 
+                            break;
+                        }
+                    }
+                }
+
+                if (rowDisplayed) {
+                    tr[i].style.display = ""; 
+                    displayedResults++; 
+
+                    if (displayedResults >= 5) {
+                        break; 
+                    }
+                } else {
+                    tr[i].style.display = "none"; 
+                }
+            }
+        }
+
+        document.getElementById("searchInputworker").addEventListener("input", filterTable);
+        
+
+
+        var currentPage = 1;
+        var pageSize = 5;
+        var totalWorkerItems = @Model.Item1.Count;
+
+       
+        function displayWorkerCurrentPage() {
+            var startIndex = (currentPage - 1) * pageSize;
+            var endIndex = startIndex + pageSize;
+            var rows = document.querySelectorAll("#workerListTable tbody tr");
+
+            rows.forEach(function (row, index) {
+                if (index >= startIndex && index < endIndex) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        
+        document.getElementById("nextWorkerPage").addEventListener("click", function () {
+            if (currentPage < Math.ceil(totalWorkerItems / pageSize)) {
+                currentPage++;
+                displayWorkerCurrentPage();
+            }
+        });
+
+       
+        document.getElementById("previousWorkerPage").addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage--;
+                displayWorkerCurrentPage();
+            }
+        });
+
+       
+        displayWorkerCurrentPage();
+
+      
+        const clearSearchButton = document.getElementById("clearSearchButton");
+
+    
+        clearSearchButton.addEventListener("click", function () {
+            location.reload();
+        });
+
+
+        
+      
+    </script>
+}

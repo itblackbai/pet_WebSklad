@@ -6,6 +6,7 @@ using webSklad.Models;
 using Microsoft.EntityFrameworkCore;
 using webSklad.Interfaces;
 using webSklad.Repository;
+using MvcPaging;
 
 namespace webSklad.Controllers
 {
@@ -303,6 +304,10 @@ namespace webSklad.Controllers
 
             return NotFound();
         }
+
+
+       
+
 
     }
 }

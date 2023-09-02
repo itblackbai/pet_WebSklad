@@ -27,6 +27,9 @@ namespace webSklad
             //Interfaces && Repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+            builder.Services.AddScoped<IFopRepository, FopRepository>();
+            builder.Services.AddScoped<IShopPostInfoRepository, ShopPostInfoRepository>();
+            builder.Services.AddScoped<ISRRepository, SRRepository>();
 
 
             builder.Services.Configure<IdentityOptions>(options =>
@@ -75,6 +78,11 @@ namespace webSklad
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "createShopPostInfo",
+                pattern: "Settings/CreateShopPostInfo",
+                defaults: new { controller = "ShopPostInfo", action = "CreateShopPostInfo" });
 
             app.Run();
         }
