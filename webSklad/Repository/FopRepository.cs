@@ -53,6 +53,24 @@ namespace webSklad.Repository
             return shopPostInfo;
         }
 
+        public async Task<List<Fop>> LoadFopsForPostAsync(int shopPostInfoId)
+        {
+            var fops = await _context.FOPS
+                 .Where(f => f.ShopPostInfoId == shopPostInfoId)
+                 .ToListAsync();
+
+            return fops;
+        }
+
+        public async Task<List<Fop>> LoadFopsForShopAsync(int shopInfoId)
+        {
+            var fops = await _context.FOPS
+                .Where(f => f.ShopPostInfoId == shopInfoId)
+                .ToListAsync();
+
+            return fops;
+        }
+
         public async Task<bool> Save()
         {
             var saved = await _context.SaveChangesAsync();

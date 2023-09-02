@@ -1,0 +1,143 @@
+﻿@model webSklad.Models.ViewModels.InvoiceViewModel
+
+@{
+    ViewData["Title"] = "Create Invoice";
+}
+<div class="login-form-container">
+    <h2>Додати накладну </h2>
+
+    @using (Html.BeginForm("CreateInvoice", "Product", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+            <span class="text-danger" data-valmsg-for="Name" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="DateTime">Дата:</label>
+            <input type="date" id="DateTime" name="DateTime" class="form-control" />
+            <span class="text-danger" data-valmsg-for="DateTime" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="DatePostponement">Дата відтермінування:</label>
+            <input type="date" id="DatePostponement" name="DatePostponement" class="form-control" />
+            <span class="text-danger" data-valmsg-for="DateTime" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PostInfoId)
+            @Html.DropDownListFor(model => model.PostInfoId, Model.PostInfos, "Виберіть постачальника", new { @class = "form-control", id = "shopPostInfoId" })
+            <span class="text-danger" data-valmsg-for="ShopPostInfoId" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PostFopId)
+            @Html.DropDownListFor(model => model.PostFopId, Model.PostFops, "Виберіть фопа постачальника", new { @class = "form-control", id = "fopId" })
+            <span class="text-danger" data-valmsg-for="FOPId" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PostSRId)
+            @Html.DropDownListFor(model => model.PostSRId, Model.PostSR, "Виберіть торгового постачальника", new { @class = "form-control", id = "srId" })
+            <span class="text-danger" data-valmsg-for="SRId" data-valmsg-replace="true"></span>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShopInfoId)
+            @Html.DropDownListFor(model => model.ShopInfoId, Model.ShopInfos, "Виберіть магазин", new { @class = "form-control", id = "shopInfoId" })
+            <span class="text-danger" data-valmsg-for="ShopPostInfoId" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShopFopId)
+            @Html.DropDownListFor(model => model.ShopFopId, Model.ShopFops, "Виберіть фопа магазину", new { @class = "form-control", id = "shopfopId" })
+            <span class="text-danger" data-valmsg-for="FOPId" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Додати" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary">Відмінити</a>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#shopPostInfoId').change(function () {
+                var selectedShopPostInfoId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("LoadFOPs", "Product")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { shopPostInfoId: selectedShopPostInfoId },
+                    success: function (response) {
+                        var fopDropdown = $('#fopId');
+                        fopDropdown.empty();
+
+                        $.each(response, function (i, fop) {
+                            fopDropdown.append($('<option></option>').val(fop.value).text(fop.text));
+                        });
+                    },
+                    error: function () {
+                        console.log('Error occurred while loading FOPs.');
+                    }
+                });
+            });
+            $('#shopPostInfoId').change(function () {
+                var selectedshopPostInfoId = $(this).val();
+                $.ajax({
+                    url: '/Product/LoadSRsForPost',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { srId: selectedshopPostInfoId },
+                    success: function (response) {
+                        var srDropdown = $('#srId');
+                        srDropdown.empty();
+
+                        $.each(response, function (i, sr) {
+                            srDropdown.append($('<option></option>').val(sr.value).text(sr.text));
+                        });
+                    },
+                    error: function () {
+                        console.log('Error loading sales representatives for the selected post.');
+                    }
+                });
+            });
+            $('#shopInfoId').change(function () {
+                var selectedshopInfoId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("LoadShopFOPs", "Product")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { shopInfoId: selectedshopInfoId },
+                    success: function (response) {
+                        var fopDropdown = $('#shopfopId');
+                        fopDropdown.empty();
+
+                        $.each(response, function (i, fop) {
+                            fopDropdown.append($('<option></option>').val(fop.value).text(fop.text));
+                        });
+                    },
+                    error: function () {
+                        console.log('Error occurred while loading FOPs.');
+                    }
+                });
+            });
+
+
+           
+        });
+
+       
+       
+    </script>
+}

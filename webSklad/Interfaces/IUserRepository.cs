@@ -7,6 +7,8 @@ namespace webSklad.Interfaces
     {
         Task<User> GetCurrentyUser();
         Task<User> GetUserByIdAsync(string userId);
+        Task<string> GetCurrentUserIdAsync();
+        Task<User> GetCurrentUserCreatedByUserAsync();
         Task<IdentityResult> CreateUserAsync(User user, string password);
 
         Task<IdentityResult> DeleteUserAsync(User user);

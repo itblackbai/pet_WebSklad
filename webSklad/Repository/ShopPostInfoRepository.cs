@@ -84,5 +84,16 @@ namespace webSklad.Repository
             _context.ShopPostInfos.Update(shopPost);
             return await Save();
         }
+
+        public async Task<List<ShopPostInfo>> GetShopPostInfosByTypeAsync(string userId, string type)
+        {
+            var shopPostInfos = await _context.ShopPostInfos
+                .Where(s => s.UserId == userId && s.Type == type)
+                .ToListAsync();
+
+            return shopPostInfos;
+        }
+
+       
     }
 }

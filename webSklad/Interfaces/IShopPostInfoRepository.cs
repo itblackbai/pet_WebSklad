@@ -18,5 +18,8 @@ namespace webSklad.Interfaces
 
         Task<bool> UpdateShopPostInfo(ShopPostInfo shopPost);
 
+        Task<List<ShopPostInfo>> GetShopPostInfosByTypeAsync(string userId, string type);
+
+        
     }
 }

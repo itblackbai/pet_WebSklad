@@ -98,5 +98,37 @@ namespace webSklad.Repository
             var result = await _userManager.UpdateAsync(user);
             return result;
         }
+
+        public async Task<string> GetCurrentUserIdAsync()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null || !httpContext.User.Identity.IsAuthenticated)
+            {
+                return null;
+            }
+
+            var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return userId;
+        }
+
+        public async Task<User> GetCurrentUserCreatedByUserAsync()
+        {
+            var currentUser = await GetCurrentyUser();
+            if (currentUser == null)
+            {
+                return null;
+            }
+
+            var createdByUserId = currentUser.CreatedByUserId;
+            if (string.IsNullOrEmpty(createdByUserId))
+            {
+                return null;
+            }
+
+            var createdByUser = await GetUserByIdAsync(createdByUserId);
+            return createdByUser;
+        }
+
+
     }
 }
