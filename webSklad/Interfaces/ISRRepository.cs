@@ -14,5 +14,8 @@ namespace webSklad.Interfaces
         Task<bool> DeleteSR(int srId);
 
         Task<bool> UpdateSR(SalesRepresentative sr);
+
+        Task<List<SalesRepresentative>> LoadSRsForPostAsync(int srId);
+
     }
 }

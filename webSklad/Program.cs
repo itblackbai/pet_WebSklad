@@ -30,6 +30,7 @@ namespace webSklad
             builder.Services.AddScoped<IFopRepository, FopRepository>();
             builder.Services.AddScoped<IShopPostInfoRepository, ShopPostInfoRepository>();
             builder.Services.AddScoped<ISRRepository, SRRepository>();
+            builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
 
             builder.Services.Configure<IdentityOptions>(options =>

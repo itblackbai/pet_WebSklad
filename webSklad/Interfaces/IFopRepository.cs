@@ -14,5 +14,10 @@ namespace webSklad.Interfaces
         Task<bool> DeleteFop(int fopId);
 
         Task<bool> UpdateFop(Fop fop);
+
+        Task<List<Fop>> LoadFopsForShopAsync(int shopInfoId);
+
+        Task<List<Fop>> LoadFopsForPostAsync(int shopPostInfoId);
+
     }
 }

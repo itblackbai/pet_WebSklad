@@ -61,5 +61,15 @@ namespace webSklad.Repository
             _context.SalesRepresentatives.Update(sr);
             return await Save();
         }
+
+        public async Task<List<SalesRepresentative>> LoadSRsForPostAsync(int srId)
+        {
+            var fops = await _context.SalesRepresentatives
+                .Where(f => f.ShopPostInfoId == srId)
+                .ToListAsync();
+
+            return fops;
+        }
+
     }
 }
