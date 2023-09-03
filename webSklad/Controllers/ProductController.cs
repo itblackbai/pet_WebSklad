@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using webSklad.Data;
 using webSklad.Interfaces;
 using webSklad.Models;
@@ -13,37 +14,39 @@ namespace webSklad.Controllers
 {
     public class ProductController : Controller
     {
-        /*
+     
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly WebSkladContext _context;
-        */
+     
         
         private readonly ISRRepository _srRepository;
         private readonly IFopRepository _fopRepository;
         private readonly IUserRepository _userRepository;
         private readonly IShopPostInfoRepository _shopPostInfoRepository;
         private readonly IInvoiceRepository _invoiceRepository;
+        private readonly IProductRepository _productRepository;
 
         private const string ShopInfoType = "shopinfo";
         private const string PostInfoType = "postinfo";
 
         public ProductController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, WebSkladContext context,
-           ISRRepository srRepositroy, IFopRepository fopRepository, IUserRepository userRepository, IShopPostInfoRepository shopPostInfoRepository, IInvoiceRepository invoiceRepository)
+           ISRRepository srRepositroy, IFopRepository fopRepository, IUserRepository userRepository, IShopPostInfoRepository shopPostInfoRepository, IInvoiceRepository invoiceRepository, IProductRepository productRepository)
         {
-            /*
+        
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _context = context;
-            */
+    
 
             _srRepository = srRepositroy;
             _fopRepository = fopRepository;
             _userRepository = userRepository;
             _shopPostInfoRepository = shopPostInfoRepository;
             _invoiceRepository = invoiceRepository;
+            _productRepository = productRepository;
         }
         [HttpPost]
         public async Task<IActionResult> LoadShopFOPs(int shopInfoId)
@@ -192,5 +195,186 @@ namespace webSklad.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> InvoiceInfo(string? sku, int? invoiceId)
+        {
+            if (User.IsInRole("ShopOwner"))
+            {
+                var currentUser = await _userRepository.GetCurrentUserIdAsync();
+
+                if (currentUser == null)
+                {
+                    return NotFound();
+                }
+
+                var userProducts = _productRepository.GetProducts()
+                    .Where(p => p.UserProductId == currentUser)
+                    .ToList();
+
+                Invoice invoice;
+
+                if (invoiceId.HasValue)
+                {
+                    invoice = await _invoiceRepository.GetInvoiceByIdAsync(invoiceId.Value, currentUser);
+                }
+                else
+                {
+                    invoice = await _invoiceRepository.GetInvoiceOrderByIdAsync(currentUser);
+                }
+
+                if (invoice == null)
+                {
+                    return NotFound();
+                }
+                invoice.Products = userProducts;
+
+                return View(invoice);
+            }
+
+            else if (User.IsInRole("Accountant") || (User.IsInRole("Executor")))
+            {
+
+                var currentUser = await _userRepository.GetCurrentyUser();
+
+                if (currentUser == null)
+                {
+                    return NotFound();
+                }
+                var createdByUserId = currentUser.CreatedByUserId;
+                var createdByUser = await _userRepository.GetCurrentUserCreatedByUserAsync();
+
+                if (createdByUser == null)
+                {
+                    return NotFound();
+                }
+
+                var userProducts = _productRepository.GetProducts()
+                    .Where(p => p.UserProductId == createdByUser.Id)
+                    .ToList();
+
+                Invoice invoice;
+
+                if (invoiceId.HasValue)
+                {
+                    invoice = await _invoiceRepository.GetInvoiceByIdAsync(invoiceId.Value, currentUser.Id);
+                }
+                else
+                {
+                    invoice = await _invoiceRepository.GetInvoiceOrderByIdAsync(currentUser.Id);
+                }
+
+                if (invoice == null)
+                {
+                    return NotFound();
+                }
+
+                invoice.Products = userProducts;
+                return View(invoice);
+            }
+
+            return NotFound();
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(string productCode, string productName, string barcode, string barcodeOwn, decimal productIncomingPrice, decimal productPrice, decimal productPriceOne, decimal productPriceTwo, decimal productPriceThree)
+        {
+            if (User.IsInRole("ShopOwner"))
+            {
+                var currentUser = await _userRepository.GetCurrentyUser();
+
+
+                if (currentUser == null)
+                {
+                    return NotFound();
+                }
+
+                var product = new Product
+                {
+                    Sku = productCode,
+                    ProductName = productName,
+                    IncomingPrice = productIncomingPrice,
+                    Price = productPrice,
+                    UserProductId = currentUser.Id,
+                    User = currentUser,
+                    BarCode = barcode,
+                    BarCodeOwn = GenerateUniqueBarcodeOwn(barcodeOwn)
+                };
+
+                await _productRepository.CreateProduct(product);
+
+                return Ok();
+            }
+            else if (User.IsInRole("Accountant") || (User.IsInRole("Executor")))
+            {
+                var currentUser = await _userRepository.GetCurrentyUser();
+
+                if (currentUser == null)
+                {
+                    return NotFound();
+                }
+                var createdByUserId = currentUser.CreatedByUserId;
+                var createdByUser = await _userRepository.GetCurrentUserCreatedByUserAsync();
+
+                if (createdByUser == null)
+                {
+                    return NotFound();
+                }
+
+                var product = new Product
+                {
+                    Sku = productCode,
+                    ProductName = productName,
+                    IncomingPrice = productIncomingPrice,
+                    Price = productPrice,
+                    UserProductId = createdByUser.Id,
+                    User = createdByUser,
+                    BarCode = barcode,
+                    BarCodeOwn = GenerateUniqueBarcodeOwn(barcodeOwn)
+                };
+
+                await _productRepository.CreateProduct(product);
+
+                return Ok();
+
+            }
+            return NotFound();
+
+        }
+
+        private string GenerateRandomBarcodeOwn()
+        {
+            Random random = new Random();
+            const string chars = "0123456789";
+            return new string(Enumerable.Repeat(chars, 13)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+      
+        private string GenerateUniqueBarcodeOwn(string barcodeOwn)
+        {
+           
+            while (_productRepository.AnyProductWithBarcodeOwn(barcodeOwn))
+            {
+                barcodeOwn = GenerateRandomBarcodeOwn();
+            }
+
+            return barcodeOwn;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FilterProducts(string productCode, string productName, string barcode, string barcodeOwn)
+        {
+            var currentUser = await _userRepository.GetCurrentyUser();
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+            var filteredProducts = _productRepository.FilterProducts(currentUser.Id, productCode, productName, barcodeOwn, barcode);
+            return PartialView("_ProductList", filteredProducts);
+        }
+
+
     }
 }

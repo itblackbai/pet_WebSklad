@@ -13,6 +13,8 @@ namespace webSklad.Models
 
         public bool? IsPayment { get; set; }
 
+        public List<Cart> Carts { get; set; }
+        public List<Product> Products { get; set; } 
 
 
         //Connections

@@ -1,0 +1,367 @@
+﻿@model webSklad.Models.Invoice
+
+<div class="invoice-info">
+
+    <div class="text-to-center ">
+        <h3>Додати товар до накладної</h3>
+    </div>
+
+
+    <p><strong>Постачальник:</strong></p>
+    <div class="Invoice-info-padding">
+ 
+    </div>
+
+
+    <p><strong>Покупець:</strong></p>
+    <div>
+        <p><strong>Змінити модель щоб додати інформацію про фопа з магазину</strong></p>
+        <p>Та додати відступ </p>
+    </div>
+
+
+    <div class="text-to-center">
+        <h3>Дата накладної : @Model.DateTime.Value.ToLongDateString()</h3>
+        <h3>Номер накладної : @Model.Name</h3>
+    </div>
+
+
+    <h2>Список всіх продуктів</h2>
+
+    <div id="filter-form">
+        <input type="text" id="product-code" placeholder="Код товару" style="width: 10%;" />
+        <input type="text" id="product-name" placeholder="Назва товару" style="width: 40%;" />
+        <input type="text" id="product-incominprice" placeholder="Вхідна ціна" style="width: 5%;" />
+        <input type="text" id="product-price" placeholder="Продажна ціна" style="width: 5%;" />
+        <input type="text" id="barcode-number" placeholder="Штрих код" style="width: 10%;" />
+        <input type="text" id="barcodeown-number" placeholder="Штрих код внутрішній" style="width: 10%;" />
+        <button class="btn buttonsmall" id="add-to-db-btn">Додати</button>
+        <button class="btn buttonsmall" id="reset-btn">Скинути</button>
+    </div>
+
+
+    <div id="product-list">
+        @if (Model.Products != null && Model.Products.Any())
+        {
+            <table class="my-table">
+                <thead>
+                    <tr>
+                        <th>Код</th>
+                        <th>Назва товару</th>
+                        <th>Вхідна ціна</th>
+                        <th>Кількість</th>
+                        <th>Роздрібна ціна</th>
+                        <th>Штрихкод</th>
+                        <th>Штрих код внутрішній</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products.Take(10))
+                    {
+                        <tr>
+                            <td style="width: 10%;">@product.Sku</td>
+                            <td style="width: 40%;">@product.ProductName</td>
+                            <td style="width: 5%;">@product.IncomingPrice</td>
+                            <td style="width: 5%;">@product.Amount</td>
+                            <td style="width: 10%;">@product.Price</td>
+                            <td style="width: 10%;">@product.BarCode</td>
+                            <td style="width: 10%;">@product.BarCodeOwn</td>
+                            <td>
+                                <div class="button-group">
+                                    <button class="edit-product-btn" data-product-id="@product.Id">Редагувати</button>
+                                </div>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Додати", "Buy", "Cart", new { sku = product.Sku, invoiceId = Model.Id, sourcePage = "invoice" }, new { @class = "btn btn-primary" })
+                            </td>
+                            <td>
+                                <button class="delete-from-bd-btn" data-product-id="@product.Id">Видалити</button>
+                            </td>
+                        </tr>
+                        <tr class="edit-product-row" style="display: none;">
+                            <td><input type="text" class="edit-product-code" style="width: 100%;" value="@product.Sku" /></td>
+                            <td><input type="text" class="edit-product-name" style="width: 100%;" value="@product.ProductName" /></td>
+                            <td><input type="text" class="edit-product-incoming-price" style="width: 100%;" value="@product.IncomingPrice" /></td>
+                            <td><input disabled type="text" class="edit-product-amount" style="width: 100%;" value="@product.Amount" /></td>
+                            <td><input type="text" class="edit-product-price" style="width: 100%;" value="@product.Price" /></td>
+                            <td><input type="text" class="edit-product-barcode" style="width: 100%;" value="@product.BarCode" /></td>
+                            <td><input type="text" class="edit-product-barcodeown" style="width: 100%;" value="@product.BarCodeOwn" /></td>
+                            <td>
+                                <button class="save-edit-btn" data-product-id="@product.Id">Зберегти</button>
+                            </td>
+                            <td>
+                                <button class="cancel-edit-btn">Скасувати</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h4>Список продуктів пустий, додайте товари</h4>
+        }
+    </div>
+    @Html.ActionLink("Показати товари в накладній", "Index", "Cart", null, new { @class = "btn btn-primary" })
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+        $('#reset-btn').on('click', function () {
+            // Очищення всіх полів в формі
+            $('#product-code').val('');
+            $('#product-name').val('');
+            $('#product-incominprice').val('');
+            $('#product-price').val('');
+            $('#product-priceone').val('');
+            $('#product-pricetwo').val('');
+            $('#product-pricethree').val('');
+            $('#barcode-number').val('');
+            $('#barcodeown-number').val('');
+
+            location.reload();
+        });
+
+
+        $('#product-list').on('click', '.delete-from-bd-btn', function () {
+            var productId = $(this).data('product-id');
+
+            $.ajax({
+                url: '@Url.Action("DeleteProduct", "Product")',
+                type: 'POST',
+                data: { productId: productId },
+                success: function () {
+                    // Refresh the product list after successful deletion
+                    getFilteredProducts();
+                }
+            });
+        });
+
+        // Функція для отримання списку товарів з урахуванням фільтрів
+        function getFilteredProducts() {
+
+            var productCode = $('#product-code').val();
+            var productName = $('#product-name').val();
+            var barcode = $('#barcode-number').val();
+            var barcodeOwn = $('#barcodeown-number').val();
+            var incomingPrice = $('#product-incominprice').val();
+            var price = $('#product-price').val();
+            var priceOne = $('#product-priceone').val();
+            var priceTwo = $('#product-pricetwo').val();
+            var priceThree = $('#product-pricethree').val();
+
+
+
+            $.ajax({
+                url: '@Url.Action("FilterProducts", "Product")',
+                type: 'POST',
+                data: {
+                    productCode: productCode,
+                    productName: productName,
+                    barcode: barcode,
+                    barcodeOwn: barcodeOwn,
+                    incomingPrice: incomingPrice,
+                    price: price,
+                    priceOne: priceOne,
+                    priceTwo: priceTwo,
+                    priceThree: priceThree
+                },
+                success: function (data) {
+                    $('#product-list').html(data);
+                }
+            });
+        }
+        function generateRandomBarcodeOwn() {
+            var barcodeOwn = '';
+            var digits = '0123456789';
+
+            for (var i = 0; i < 13; i++) {
+                var randomIndex = Math.floor(Math.random() * digits.length);
+                barcodeOwn += digits.charAt(randomIndex);
+            }
+
+            return barcodeOwn;
+        }
+        function isDecimal(value) {
+            // Перевірка чи значення є десятковим числом
+            return /^\d*\.?\d+$/.test(value);
+        }
+
+        function isNumeric(value) {
+            // Перевірка чи значення є числом
+            return /^\d+$/.test(value);
+        }
+
+
+
+        // Обробка події зміни значення в полях фільтрації
+        $('#product-code, #product-name,#barcode-number, #barcodeown-number,#incomingPrice, #price, #priceOne,#priceTwo,#priceThree ').on('input', function () {
+            getFilteredProducts();
+        });
+
+        // Обробка події натискання кнопки "Add to DB"
+        $('#add-to-db-btn').on('click', function () {
+            var productCode = $('#product-code').val();
+            var productName = $('#product-name').val();
+            var productIncomingPrice = $('#product-incominprice').val();
+
+            var productPrice = $('#product-price').val();
+
+            var productPriceOne = $('#product-priceone').val();
+            var productPriceTwo = $('#product-pricetwo').val();
+            var productPriceThree = $('#product-pricethree').val();
+            var barcode = $('#barcode-number').val();
+            var barcodeOwn = $('#barcodeown-number').val();
+
+
+            // Перевірка на правильність введених значень
+            if (!isDecimal(productIncomingPrice) && productIncomingPrice !== '') {
+                alert('Введіть десяткове число або залиште поле порожнім для вхідної ціни');
+                return;
+            }
+
+            if (!isDecimal(productPrice) && productPrice !== '') {
+                alert('Введіть десяткове число або залиште поле порожнім для продажної ціни');
+                return;
+            }
+
+            if (!isNumeric(barcode) && barcode !== '' && barcode !== null) {
+                alert('Штрих-код може містити лише цифри або бути порожнім');
+                return;
+            }
+
+            // Перевірка на кількість символів в штрих-коді
+            if (barcode && barcode.length !== 13) {
+                alert('Штрих-код повинен містити 13 символів');
+                return;
+            }
+
+            // Перевірка на пустий штрих-код власника та генерація рандомного штрих-коду
+            if (barcodeOwn.trim() === '') {
+                barcodeOwn = generateRandomBarcodeOwn();
+            }
+
+            // Перевірка на пустий штрихкод та генерація рандомного штрихкоду власника
+            if (barcode.trim() === '') {
+                // Штрихкод пустий, залишаємо його пустим
+                barcode = '';
+            }
+            if (barcodeOwn.trim() === '') {
+                // Генерація рандомного штрихкоду власника
+                barcodeOwn = generateRandomBarcodeOwn();
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddProduct", "Product")',
+                type: 'POST',
+                data:
+                {
+                    productCode: productCode,
+                    productName: productName,
+                    productIncomingPrice: productIncomingPrice,
+                    productPrice: productPrice,
+                    productPriceOne: productPriceOne,
+                    productPriceTwo: productPriceTwo,
+                    productPriceThree: productPriceThree,
+                    barcode: barcode,
+                    barcodeOwn: barcodeOwn
+
+                },
+                success: function (data) {
+                    // Оновити список товарів після успішного додавання
+                    getFilteredProducts();
+
+                    $('#product-incominprice').val('');
+                    $('#product-price').val('');
+                    $('#product-priceone').val('');
+                    $('#product-pricetwo').val('');
+                    $('#product-pricethree').val('');
+                    $('#barcode-number').val('');
+                    $('#barcodeown-number').val('');
+                }
+            });
+        });
+
+
+        $('#product-list').on('click', '.edit-product-btn', function () {
+            var row = $(this).closest('tr');
+            var editRow = row.next('.edit-product-row');
+            row.hide();
+            editRow.show();
+        });
+
+        $('#product-list').on('click', '.cancel-edit-btn', function () {
+            var editRow = $(this).closest('.edit-product-row');
+            var row = editRow.prev('tr');
+            editRow.hide();
+            row.show();
+        });
+
+        $('#product-list').on('click', '.save-edit-btn', function () {
+            var productId = $(this).data('product-id');
+            var editRow = $(this).closest('.edit-product-row');
+            var row = editRow.prev('tr');
+
+            var productCode = editRow.find('.edit-product-code').val();
+            var productName = editRow.find('.edit-product-name').val();
+            var productIncomingPrice = editRow.find('.edit-product-incoming-price').val();
+            var productPrice = editRow.find('.edit-product-price').val();
+            var productPriceOne = editRow.find('.edit-product-price-one').val();
+            var productPriceTwo = editRow.find('.edit-product-price-two').val();
+            var productPriceThree = editRow.find('.edit-product-price-three').val();
+            var productBarcode = editRow.find('.edit-product-barcode').val();
+            var productBarcodeOwn = editRow.find('.edit-product-barcodeown').val();
+
+
+            $.ajax({
+                url: '@Url.Action("EditProduct", "Product")',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    productCode: productCode,
+                    productName: productName,
+                    productIncomingPrice: productIncomingPrice,
+                    productPrice: productPrice,
+                    productPriceOne: productPriceOne,
+                    productPriceTwo: productPriceTwo,
+                    productPriceThree: productPriceThree,
+                    productBarcode: productBarcode,
+                    productBarcodeOwn: productBarcodeOwn
+
+                },
+                success: function () {
+                    // Оновити список товарів після успішного редагування
+                    getFilteredProducts();
+
+
+                }
+            });
+        });
+
+    });
+
+
+</script>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webSklad.Data;
 
@@ -11,9 +12,11 @@ using webSklad.Data;
 namespace webSklad.Migrations
 {
     [DbContext(typeof(WebSkladContext))]
-    partial class WebSkladContextModelSnapshot : ModelSnapshot
+    [Migration("20230902123814_addProductAndCartToInvoice")]
+    partial class addProductAndCartToInvoice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
