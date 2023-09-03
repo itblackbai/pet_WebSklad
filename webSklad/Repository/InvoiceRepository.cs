@@ -28,5 +28,31 @@ namespace webSklad.Repository
             _context.Invoices.Update(invoice);
             return await Save();
         }
+
+        public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId, string userId)
+        {
+            return await _context.Invoices
+                .Include(i => i.PostInfo)
+                .Include(i => i.PostFop)
+                .Include(i => i.PostSR)
+                .Include(i => i.ShopInfo)
+                .Include(i => i.ShopFop)
+                .FirstOrDefaultAsync(i => i.Id == invoiceId && i.UserInvoiceId == userId);
+        }
+
+
+        public async Task<Invoice> GetInvoiceOrderByIdAsync(string userId)
+        {
+            return await _context.Invoices
+                .Include(i => i.PostInfo)
+                .Include(i => i.PostFop)
+                .Include(i => i.PostSR)
+                .Include(i => i.ShopInfo)
+                .Include(i => i.ShopFop)
+                .OrderByDescending(i => i.Id)
+                .FirstOrDefaultAsync(i => i.UserInvoiceId == userId);
+        }
+
+
     }
 }

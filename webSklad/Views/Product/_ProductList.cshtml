@@ -1,0 +1,70 @@
+﻿@model List<Product>
+
+
+<div id="product-list">
+    @if (Model != null && Model.Any())
+    {
+        <table class="my-table">
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Назва товару</th>
+                    <th>Вхідна ціна</th>
+                    <th>Кількість</th>
+                    <th>Роздрібна ціна</th>
+                    <th>Штрихкод</th>
+                    <th>Штрих код внутрішній</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Take(10))
+                {
+                    <tr>
+                        <td style="width: 10%;">@product.Sku</td>
+                        <td style="width: 40%;">@product.ProductName</td>
+                        <td style="width: 5%;">@product.IncomingPrice</td>
+                        <td style="width: 5%;">@product.Amount</td>
+                        <td style="width: 10%;">@product.Price</td>
+                        <td style="width: 10%;">@product.BarCode</td>
+                        <td style="width: 10%;">@product.BarCodeOwn</td>
+                        <td>
+                            <div class="button-group">
+                                <button class="edit-product-btn" data-product-id="@product.Id">Редагувати</button>
+                            </div>
+                        </td>
+                        <td>
+                            @Html.ActionLink("Додати", "Buy", "Cart", new { sku = product.Sku }, new { @class = "btn btn-primary" })
+                        <td>
+                            <button class="delete-from-bd-btn" data-product-id="@product.Id">Видалити</button>
+                        </td>
+                    </tr>
+                    <tr class="edit-product-row" style="display: none;">
+                        <td><input type="text" class="edit-product-code" style="width: 100%;" value="@product.Sku" /></td>
+                        <td><input type="text" class="edit-product-name" style="width: 100%;" value="@product.ProductName" /></td>
+                        <td><input type="text" class="edit-product-incoming-price" style="width: 100%;" value="@product.IncomingPrice" /></td>
+                        <td><input disabled type="text" class="edit-product-amount" style="width: 100%;" value="@product.Amount" /></td>
+                        <td><input type="text" class="edit-product-price" style="width: 100%;" value="@product.Price" /></td>
+                        <td><input type="text" class="edit-product-barcode" style="width: 100%;" value="@product.BarCode" /></td>
+                        <td><input type="text" class="edit-product-barcodeown" style="width: 100%;" value="@product.BarCodeOwn" /></td>
+                        <td>
+                            <button class="save-edit-btn" data-product-id="@product.Id">Зберегти</button>
+                        </td>
+                        <td>
+                            <button class="cancel-edit-btn">Скасувати</button>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h4>Список продуктів пустий, додайте товари</h4>
+    }
+</div>
