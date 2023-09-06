@@ -48,6 +48,8 @@ namespace webSklad.Controllers
             _invoiceRepository = invoiceRepository;
             _productRepository = productRepository;
         }
+        
+
         [HttpPost]
         public async Task<IActionResult> LoadShopFOPs(int shopInfoId)
         {
@@ -374,6 +376,64 @@ namespace webSklad.Controllers
             var filteredProducts = _productRepository.FilterProducts(currentUser.Id, productCode, productName, barcodeOwn, barcode);
             return PartialView("_ProductList", filteredProducts);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProduct(int productId)
+        {
+           
+
+            var currentUser = await _userRepository.GetCurrentUserIdAsync();
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+
+
+            var product = await _productRepository.GetProductById(productId);
+
+
+            if (product == null || product.UserProductId != currentUser)
+            {
+                return NotFound();
+            }
+
+            await _productRepository.DeleteProduct(product);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(int productId, string productCode, string productName, decimal productIncomingPrice, decimal productPrice, decimal productPriceOne, decimal productPriceTwo, decimal productPriceThree, string productBarcode, string productBarcodeOwn)
+        {
+            var currentUser = await _userRepository.GetCurrentUserIdAsync();
+
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetProductById(productId);
+
+            if (product == null || product.UserProductId != currentUser)
+            {
+                return NotFound();
+            }
+
+            product.Sku = productCode;
+            product.ProductName = productName;
+            product.IncomingPrice = productIncomingPrice;
+            product.Price = productPrice;
+            product.BarCode = productBarcode;
+            product.BarCodeOwn = productBarcodeOwn;
+
+
+            await _productRepository.SaveAsync();
+
+            return Ok();
+        }
+
 
 
     }
