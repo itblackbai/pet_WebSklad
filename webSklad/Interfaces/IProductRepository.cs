@@ -14,5 +14,9 @@ namespace webSklad.Interfaces
         bool AnyProductWithBarcodeOwn(string barcodeOwn);
 
         IEnumerable<Product> FilterProducts(string userProductId, string productCode, string productName, string barcode, string barcodeOwn);
+
+        Task<Product> GetProductById(int productId);
+
+        Task<bool> DeleteProduct(Product product);
     }
 }

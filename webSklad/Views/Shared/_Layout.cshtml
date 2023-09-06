@@ -39,6 +39,7 @@
                         else if (User.Identity.IsAuthenticated && User.IsInRole("ShopOwner"))
                         {
                             <li><a href="/Product/CreateInvoice">Прихідна накладна</a></li>
+                            <li><a href="/Product/InvoiceInfo">Тест накладних</a></li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Товаро обіг</a>
                                 <ul class="dropdown-menu">

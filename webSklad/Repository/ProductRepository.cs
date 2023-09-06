@@ -62,5 +62,19 @@ namespace webSklad.Repository
 
             return filteredProducts;
         }
+
+
+        public async Task<Product> GetProductById(int productId)
+        {
+            return _context.Products.FirstOrDefault(p => p.Id == productId);
+        }
+
+
+
+        public Task<bool> DeleteProduct(Product product)
+        {
+            _context.Products.Remove(product);
+            return Save();
+        }
     }
 }
