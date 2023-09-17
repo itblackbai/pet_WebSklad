@@ -1,0 +1,85 @@
+﻿@model List<Product>
+
+
+<div id="salesinvoice-list">
+
+
+    <div class="table-editor" id="table_1" data-entries="5" data-entries-options="[5, 10, 15]">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="th-sm" style="width: 10%">Code</th>
+                    <th class="th-sm" style="width: 60%">Name</th>
+                    <th class="th-sm" style="width: 10%">Price</th>
+                    <th class="th-sm" style="width: 10%">Amount</th>
+                    <th class="th-sm" style="width: 10%">Sell Price</th>
+                    <th class="th-sm" style="width: 10%">BarCode</th>
+                    <th class="th-sm" style="width: 10%">BarCode Own</th>
+                    <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                    <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                    <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+
+
+
+                    @foreach (var product in Model.Take(10))
+                    {
+                        <tr>
+                            <td>@product.Sku</td>
+                            <td>@product.ProductName</td>
+                            <td>@product.IncomingPrice</td>
+                            <td>@product.Amount</td>
+                            <td>@product.Price</td>
+                            <td>@product.BarCode </td>
+                            <td>@product.BarCodeOwn</td>
+                            <td class="text-right">
+
+                                <div class="btn-group float-right">
+
+                                    <div class="button-group">
+                                        <button class="btn btn-primary" id="edit-product-btn" data-product-id="@product.Id"> <i class="bi bi-pencil-square"></i></button>
+                                    </div>
+
+                                    <a href="@Url.Action("Buy", "Cart", new { sku = product.Sku, sourcePage = "salesinvoice"  })" class="btn btn-success">
+                                        <i class="bi bi-patch-plus text-white"></i>
+                                    </a>
+
+                                    <button class="btn btn-danger" id="delete-from-bd-btn" data-product-id="@product.Id"><i class="bi bi-trash"></i></button>
+
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr class="edit-product-row" style="display: none;">
+                            <td><input type="text" class="class form-control" id="edit-product-code" style="width: 100%;" value="@product.Sku" /></td>
+                            <td><input type="text" class="class form-control" id="edit-product-name" style="width: 100%;" value="@product.ProductName" /></td>
+                            <td><input type="text" class="class form-control" id="edit-product-incoming-price" style="width: 100%;" value="@product.IncomingPrice" /></td>
+                            <td><input disabled type="text" class="class form-control" id="edit-product-amount" style="width: 100%;" value="@product.Amount" /></td>
+                            <td><input type="text" class="class form-control" id="edit-product-price" style="width: 100%;" value="@product.Price" /></td>
+                            <td><input type="text" class="class form-control" id="edit-product-barcode" style="width: 100%;" value="@product.BarCode" /></td>
+                            <td><input type="text" class="class form-control" id="edit-product-barcodeown" style="width: 100%;" value="@product.BarCodeOwn" /></td>
+                            <td>
+                                <div class="btn-group float-right">
+
+                                    <button class="btn btn-success" id="save-edit-btn" data-product-id="@product.Id"><i class="bi bi-patch-plus text-white"></i></button>
+
+                                    <button class="btn btn-danger" id="cancel-edit-btn"><i class="bi bi-x-lg"></i></button>
+                                </div>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+
+                    }
+                }
+
+            </tbody>
+        </table>
+
+
+    </div>
+</div>

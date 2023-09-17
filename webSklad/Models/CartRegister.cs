@@ -8,6 +8,8 @@ namespace webSklad.Models
         public int Id { get; set; }
         public DateTime? CartRegisterDateTime { get; set; }
 
+        //public DateTime? CartRegisterDateTimenOW { get; set; }
+
         [Column(TypeName = "decimal(18,2)")]
         public decimal? SoldAmount { get; set; }
 

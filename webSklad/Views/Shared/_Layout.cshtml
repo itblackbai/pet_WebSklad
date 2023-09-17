@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -38,175 +40,175 @@
                         }
                         else if (User.Identity.IsAuthenticated && User.IsInRole("ShopOwner"))
                         {
-                            <li><a href="/Product/CreateInvoice">Прихідна накладна</a></li>
-                            <li><a href="/Product/InvoiceInfo">Тест накладних</a></li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Товаро обіг</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/Product/CreateInvoice">Прихідна накладна</a></li>
-                                    <li><a href="/Product/CreateSalesInvoice">Видаткова накладна</a></li>
-                                    <li><a href="/Product/CreateScore">Рахунок</a></li>
-                                    <li><a href="/Product/CreateReturnToSupplier">Повернення постачальнику</a></li>
-                                    <li><a href="/CartRegister/WriteOffTheProduct">Списання</a></li>
-                                    <li><a href="/Product/CreateAnOrder">Сформувати замовлення</a></li>
-                                    <li><a href="/CartRegister/Inventory">Інвентаризація</a></li>
-                                    <li><a href="/Product/InvoiceInfo">Остання накладна</a></li>
+
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="productMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Documents
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="productMenu">
+                                    <li><a class="dropdown-item" href="/Product/CreateInvoice">Add invoice</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateSalesInvoice">Add sales invoice</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateScore">Score</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateReturnToSupplier">Return to supplier</a></li>
+                                    <li><a class="dropdown-item" href="/CartRegister/WriteOffTheProduct">Write-off</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateAnOrder">Create an order</a></li>
+                                    <li><a class="dropdown-item" href="/CartRegister/Inventory">Inventory</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CartRegister" asp-action="Index">Зміни</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/CartRegister/ShowAllProductCartRegister">Відкрити чек</a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="cartRegisterMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Check
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cartRegisterMenu">
+                                    <li><a class="dropdown-item" href="/CartRegister/ShowAllProductCartRegister">Open a check</a></li>
+                                    
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Index">Звіти</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/Cart/InvoiceArchive">Архів накладних</a></li>
-                                    <li><a href="/Cart/CartArchive">Архів чеків</a></li>
-                                    <li><a href="/Cart/SalesInvoiceArchive">Архів видаткових накладних</a></li>
-                                    <li><a href="/Cart/ScoreArchive">Архів рахунків</a></li>
-                                    <li><a href="/Cart/RemoveToSupplierArchive">Архів повернення постачальнику</a></li>
-                                    <li><a href="/Cart/CreateAnOrderArchive">Сформувати замовлення</a></li>
-                                    <li><a href="/Cart/IncomeStatement">Дохід</a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="cartInvoiceMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Archive
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cartInvoiceMenu">
+                                    <li><a class="dropdown-item" href="/Cart/InvoiceArchive">Invoice archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/SalesInvoiceArchive">Sales invoice archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/ScoreArchive">Score archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/RemoveToSupplierArchive">Return to supplier archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/CreateAnOrderArchive">Create an order achive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/InventoryArchive">Inventory archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/IncomeStatement">Income</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/CartArchive">Checks archive</a></li>
+
                                 </ul>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Кабінет</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Logout</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Налаштування</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
                             </li>
                         }
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Cashier"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CartRegister" asp-action="Index">Зміни</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/CartRegister/ShowAllProductCartRegister">Відкрити чек</a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="cartRegisterMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Check
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cartRegisterMenu">
+                                    <li><a class="dropdown-item" href="/CartRegister/ShowAllProductCartRegister">Open a check</a></li>
+
                                 </ul>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Кабінет</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Logout</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Налаштування</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
                             </li>
                         }
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Accountant"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Товаро обіг</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/Product/CreateInvoice">Прихідна накладна</a></li>
-                                    <li><a href="/Product/CreateSalesInvoice">Видаткова накладна</a></li>
-                                    <li><a href="/Product/CreateScore">Рахунок</a></li>
-                                    <li><a href="/Product/RemoveToSupplier">Повернення постачальнику</a></li>
-                                    <li><a href="/CartRegister/WriteOffTheProduct">Списання</a></li>
-                                    <li><a href="#">Сформувати замовлення</a></li>
-                                    <li><a href="/CartRegister/Inventory">Інвентаризація</a></li>
-                                    <li><a href="/Product/InvoiceInfo">Остання накладна</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="productMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Documents
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="productMenu">
+                                    <li><a class="dropdown-item" href="/Product/CreateInvoice">Add invoice</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateSalesInvoice">Add sales invoice</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateScore">Score</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateReturnToSupplier">Return to supplier</a></li>
+                                    <li><a class="dropdown-item" href="/CartRegister/WriteOffTheProduct">Write-off</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateAnOrder">Create an order</a></li>
+                                    <li><a class="dropdown-item" href="/CartRegister/Inventory">Inventory</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="cartInvoiceMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Archive
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cartInvoiceMenu">
+                                    <li><a class="dropdown-item" href="/Cart/InvoiceArchive">Invoice archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/SalesInvoiceArchive">Sales invoice archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/ScoreArchive">Score archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/RemoveToSupplierArchive">Return to supplier archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/CreateAnOrderArchive">Create an order achive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/InventoryArchive">Inventory archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/IncomeStatement">Income</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/CartArchive">Checks archive</a></li>
+
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Index">Звіти</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/Cart/InvoiceArchive">Архів накладних</a></li>
-                                    <li><a href="/Cart/CartArchive">Архів чеків</a></li>
-                                    <li><a href="/Cart/SalesInvoiceArchive">Архів видаткових накладних</a></li>
-                                    <li><a href="/Cart/IncomeStatement">Дохід</a></li>
-                                    <li><a href="/Cart/ScoreArchive">Архів рахунків</a></li>
-                                    <li><a href="/Cart/RemoveToSupplierArchive">Архів повернення постачальнику</a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                </ul>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Logout</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Кабінет</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Налаштування</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
                             </li>
                         }
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Executor"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Товаро обіг</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/Product/CreateInvoice">Прихідна накладна</a></li>
-                                    <li><a href="/Product/CreateSalesInvoice">Видаткова накладна</a></li>
-                                    <li><a href="/Product/CreateScore">Рахунок</a></li>
-                                    <li><a href="/Product/RemoveToSupplier">Повернення постачальнику</a></li>
-                                    <li><a href="/CartRegister/WriteOffTheProduct">Списання</a></li>
-                                    <li><a href="#">Сформувати замовлення</a></li>
-                                    <li><a href="/CartRegister/Inventory">Інвентаризація</a></li>
-                                    <li><a href="/Product/InvoiceInfo">Остання накладна</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="productMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Documents
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="productMenu">
+                                    <li><a class="dropdown-item" href="/Product/CreateInvoice">Add invoice</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateSalesInvoice">Add sales invoice</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateScore">Score</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateReturnToSupplier">Return to supplier</a></li>
+                                    <li><a class="dropdown-item" href="/CartRegister/WriteOffTheProduct">Write-off</a></li>
+                                    <li><a class="dropdown-item" href="/Product/CreateAnOrder">Create an order</a></li>
+                                    <li><a class="dropdown-item" href="/CartRegister/Inventory">Inventory</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CartRegister" asp-action="Index">Зміни</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/CartRegister/ShowAllProductCartRegister">Відкрити чек</a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="cartRegisterMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Check
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cartRegisterMenu">
+                                    <li><a class="dropdown-item" href="/CartRegister/ShowAllProductCartRegister">Open a check</a></li>
+
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Index">Звіти</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/Cart/InvoiceArchive">Архів накладних</a></li>
-                                    <li><a href="/Cart/CartArchive">Архів чеків</a></li>
-                                    <li><a href="/Cart/SalesInvoiceArchive">Архів видаткових накладних</a></li>
-                                    <li><a href="/Cart/IncomeStatement">Дохід</a></li>
-                                    <li><a href="/Cart/ScoreArchive">Архів рахунків</a></li>
-                                    <li><a href="/Cart/RemoveToSupplierArchive">Архів повернення постачальнику</a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
-                                    <li><a href="#"></a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="cartInvoiceMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Archive
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cartInvoiceMenu">
+                                    <li><a class="dropdown-item" href="/Cart/InvoiceArchive">Invoice archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/SalesInvoiceArchive">Sales invoice archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/ScoreArchive">Score archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/RemoveToSupplierArchive">Return to supplier archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/CreateAnOrderArchive">Create an order achive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/InventoryArchive">Inventory archive</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/IncomeStatement">Income</a></li>
+                                    <li><a class="dropdown-item" href="/Cart/CartArchive">Checks archive</a></li>
+
                                 </ul>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Кабінет</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Logout</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Налаштування</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
                             </li>
                         }
                         else if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Кабінет</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Авторизація</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
                             </li>
                         }
+                      
                     </ul>
                 </div>
             </div>

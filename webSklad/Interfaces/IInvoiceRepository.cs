@@ -10,5 +10,11 @@ namespace webSklad.Interfaces
         Task<Invoice> GetInvoiceByIdAsync(int invoiceId, string userId);
 
         Task<Invoice> GetInvoiceOrderByIdAsync(string userId);
+
+         int GetLastInvoiceId();
+
+        Task<Invoice> GetInvoiceById(int invoiceId);
+
+
     }
 }

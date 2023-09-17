@@ -1,0 +1,80 @@
+﻿@model IEnumerable<webSklad.Models.Product_item>
+
+
+<div class="invoice-info">
+    <div class="table-editor" id="table_1" data-entries="5" data-entries-options="[5, 10, 15]">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="th-sm" style="width: 10%">Code</th>
+                    <th class="th-sm" style="width: 60%">Name</th>
+                    <th class="th-sm" style="width: 10%">Quantity</th>
+                    <th class="th-sm" style="width: 10%">Price</th>
+                    <th class="th-sm" style="width: 10%">Sell Price</th>
+                    <th class="th-sm" style="width: 10%">BarCode</th>
+                    <th class="th-sm" style="width: 10%">SubTotal</th>
+                    <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                    <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cart in Model)
+                {
+                    <tr>
+                        <td>@cart.Product.Sku</td>
+                        <td>@cart.Product.ProductName</td>
+                        <td>@cart.Quantity</td>
+                        <td>@cart.IncomingPrice</td>
+                        <td>@cart.Price</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(cart.BarCode))
+                            {
+                                @cart.BarCode
+                            }
+                            else
+                            {
+                                @cart.BarCodeOwn
+                            }
+                        </td>
+                        <td>@cart.SubTotalCart</td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <form action="@Url.Action("AddReturnToSupplier", "Cart", new { sku = cart.Product.Sku, sourcePage = "supplier" })" method="post">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle-dotted"></i>
+                                    </button>
+                                </form>
+                                <form action="@Url.Action("MinusReturnToSupplier", "Cart", new { sku = cart.Product.Sku })" method="post">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-dash-circle-dotted"></i>
+                                    </button>
+                                </form>
+                                <form action="@Url.Action("RemoveReturnToSupplier", "Cart", new { sku = cart.Product.Sku })" method="post">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="7" style="text-align:right">
+                        Total :  @ViewBag.total
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+
+                            <a href="@Url.Action("SaveCart", "Cart", new { sourcePage = "supplier" })" class="btn btn-primary">
+                                <i class="bi bi-save-fill"></i>
+                            </a>
+                            <a href="@Url.Action("ReturnToSupplierInfo", "Product")" class="btn btn-danger">
+                                <i class="bi bi-backspace"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
