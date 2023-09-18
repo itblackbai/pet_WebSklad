@@ -6,44 +6,40 @@ namespace webSklad.Models.ViewModels
 {
     public class InvoiceViewModel
     {
-        [Required(ErrorMessage = "Внесіть номер накладнї")]
-        [StringLength(50, ErrorMessage = "№ накладної повинно містити до 50 символів")]
-        [Display(Name = "№ накладної")]
+        [Required(ErrorMessage = "Enter the invoice number")]
+        [StringLength(50, ErrorMessage = "Invoice number must contain up to 50 characters")]
+        [Display(Name = "Invoice number")]
         public string? Name { get; set; }
-        [Required(ErrorMessage = "Виберіть дату")]
+        [Required(ErrorMessage = "Select a date")]
         public DateTime? DateTime { get; set; }
-        [Required(ErrorMessage = "Виберіть дату")]
+        [Required(ErrorMessage = "Select a date")]
         public DateTime? DateTimeNow { get; set; }
-        [Required(ErrorMessage = "Виберіть дату")]
+        [Required(ErrorMessage = "Select a date")]
         public DateTime? DatePostponement { get; set; }
 
-
-
-        // Вибір фопа та постачальника
-        [Required(ErrorMessage = "Виберіть постачальника")]
-        [Display(Name = "Постачальник")]
-        public int? PostInfoId { get; set; }  //  [ShopPostInfoId]  вибір постачальника
+        [Required(ErrorMessage = "Select a supplier")]
+        [Display(Name = "Supplier")]
+        public int? PostInfoId { get; set; }  
         public SelectList? PostInfos{ get; set; }
-        [Required(ErrorMessage = "Виберіть фопа постачальника")]
-        [Display(Name = "Фоп постачальника")]
-        public int? PostFopId { get; set; }  // [FOPId]  вибір фопа постачальника
-        public SelectList? PostFops { get; set; }  // FOPs
+        [Required(ErrorMessage = "Select a vendor fop")]
+        [Display(Name = "Provider Fop")]
+        public int? PostFopId { get; set; } 
+        public SelectList? PostFops { get; set; } 
 
-        [Required(ErrorMessage = "Виберіть торгового постачальника")]
-        [Display(Name = "Торговий постачальника")]
-        public int? PostSRId { get; set; }  // [FOPId]  вибір фопа постачальника
-        public SelectList? PostSR { get; set; }  // FOPs
+        [Required(ErrorMessage = "Select a merchant vendor")]
+        [Display(Name = "Trade Vendor")]
+        public int? PostSRId { get; set; } 
+        public SelectList? PostSR { get; set; }
 
 
-        // Вибір фопа та магазин
-        [Required(ErrorMessage = "Виберіть магазин")]
-        [Display(Name = "Магазин")]
-        public int? ShopInfoId { get; set; }  //  [ShopPostInfoId]  вибір постачальника
+        [Required(ErrorMessage = "Select a store")]
+        [Display(Name = "Shop")]
+        public int? ShopInfoId { get; set; }  
         public SelectList? ShopInfos { get; set; }
-        [Required(ErrorMessage = "Виберіть фопа постачальника")]
-        [Display(Name = "Фоп постачальника")]
-        public int? ShopFopId { get; set; }  // [FOPId]  вибір фопа постачальника
-        public SelectList? ShopFops { get; set; }  // FOPs
+        [Required(ErrorMessage = "Select a vendor fop")]
+        [Display(Name = "Provider Fop")]
+        public int? ShopFopId { get; set; }  
+        public SelectList? ShopFops { get; set; }  
 
     }
 }

@@ -1,0 +1,89 @@
+﻿@model List<Cart>
+
+<h1>Income</h1>
+
+@using (Html.BeginForm("IncomeStatement", "Cart", FormMethod.Get))
+{
+    <label for="selectedDate">Select date:</label>
+    <input type="date" id="selectedDate" name="selectedDate" value="@ViewBag.SelectedDate?.ToString("yyyy-MM-dd")" />
+    <input type="submit" value="Select" />
+}
+
+@{
+    decimal? totalIncome = 0;
+    int? totalCarts = 0;
+    decimal? totalProducts = 0;
+}
+
+@foreach (var cartGroup in Model.OrderByDescending(item => item.CartRegister.CartRegisterDateTime).GroupBy(item => item.CartRegister.CartRegisterDateTime?.Date).Take(7))
+{
+    var currentDate = cartGroup.Key;
+    decimal? incomeForDay = 0;
+
+    <h2>Date: @currentDate?.ToString("dd.MM.yyyy")</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="th-sm" style="width: 1%"></th>
+                <th class="th-sm" style="width: 50%">Product name</th>
+                <th class="th-sm" style="width: 10%">Price</th>
+                <th class="th-sm" style="width: 10%">Amount</th>
+                <th class="th-sm" style="width: 10%">Sell price</th>
+                <th class="th-sm" style="width: 10%">Income</th>
+                <th class="th-sm" style="width: 2%"></th>
+                <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                <th class="th-sm" style="width: 2%" data-sort="false"></th>
+                <th class="th-sm" style="width: 2%" data-sort="false"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cartItem in cartGroup)
+            {
+                decimal? income = null;
+
+                if (cartItem.Price != null && cartItem.IncomingPrice != null && cartItem.Quantity != null)
+                {
+                    decimal priceDifference = cartItem.Price.Value - cartItem.IncomingPrice.Value;
+                    income = priceDifference * cartItem.Quantity.Value;
+
+                    if (cartItem.Quantity.Value != 0)
+                    {
+                        incomeForDay += income;
+                    }
+                }
+
+                totalIncome += income;
+
+                if (cartItem.Quantity != null)
+                {
+                    totalProducts += cartItem.Quantity.Value;
+                }
+
+                <tr>
+                    <th></th>
+                    <td hidden>@cartItem.CartId</td>
+                    <td>@cartItem.Product.ProductName</td>
+                    <td>@cartItem.IncomingPrice.Value.ToString("N2")</td>
+                    <td>@cartItem.Quantity</td>
+                    <td>@cartItem.Price.Value.ToString("N2")</td>
+                    <td>@income.Value.ToString("N2") </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    totalCarts += cartGroup.Select(item => item.CartId).Distinct().Count();
+
+    <div class="summary-row">
+        <div class="summary-column">
+            <h5>Carts for the day: @cartGroup.Select(item => item.CartId).Distinct().Count()</h5>
+        </div>
+        <div class="summary-column">
+            <h5>Products for the day: @cartGroup.Sum(item => item.Quantity)</h5>
+        </div>
+        <div class="summary-column">
+            <h5>Income for the day: @incomeForDay.Value.ToString("N2") UAH</h5>
+        </div>
+    </div>
+}

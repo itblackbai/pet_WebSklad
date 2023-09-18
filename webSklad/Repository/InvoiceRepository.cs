@@ -52,7 +52,20 @@ namespace webSklad.Repository
                 .OrderByDescending(i => i.Id)
                 .FirstOrDefaultAsync(i => i.UserInvoiceId == userId);
         }
+        public int GetLastInvoiceId()
+        {
+            return _context.Invoices
+                .OrderByDescending(i => i.Id)
+                .Select(i => i.Id)
+                .FirstOrDefault();
+        }
 
+        public async Task<Invoice> GetInvoiceById(int invoiceId)
+        {
+            return await _context.Invoices.FirstOrDefaultAsync(i => i.Id == invoiceId);
+        }
+
+       
 
     }
 }

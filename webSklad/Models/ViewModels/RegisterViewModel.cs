@@ -4,39 +4,38 @@ namespace webSklad.Models.ViewModels
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Внесіть ім'я")]
-        [RegularExpression(@"^[a-zA-Zа-яА-ЯіІїЇєЄёЁ\s-]*$", ErrorMessage = "Ім'я не може містити цифр та символів")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Ім'я повинно містити від 2 до 50 символів")]
-        [Display(Name = "Ім'я")]
+        [Required(ErrorMessage = "Enter name")]
+        [RegularExpression(@"^[a-zA-Zа-яА-ЯіІїЇєЄёЁ\s-]*$", ErrorMessage = "The name cannot contain numbers and characters")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Name must contain between 2 and 50 characters")]
+        [Display(Name = "Name")]
         public string? NameUser { get; set; }
-
-        [Required(ErrorMessage = "Внесіть прізвище")]
-        [RegularExpression(@"^[a-zA-Zа-яА-ЯіІїЇєЄёЁ\s-]*$", ErrorMessage = "Прізвище не може містити цифр та символів")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Прізвище повинно містити від 2 до 50 символів")]
-        [Display(Name = "Прізвище")]
+        [Required(ErrorMessage = "Enter last name")]
+        [RegularExpression(@"^[a-zA-Zа-яА-ЯіІїЇєЄёЁ\s-]*$", ErrorMessage = "Last name cannot contain numbers and characters")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must contain between 2 and 50 characters")]
+        [Display(Name = "Surname")]
         public string? SurnameUser { get; set; }
 
-        [Required(ErrorMessage = "Внесіть номер телефону")]
-        [RegularExpression(@"^\+380\d{9}$", ErrorMessage = "Номер телефону має починатися з +380 та містити 13 символів +380XXXXXXXXX.")]
-        [Display(Name = "Номер телефону")]
+        [Required(ErrorMessage = "Enter a phone number")]
+        [RegularExpression(@"^\+380\d{9}$", ErrorMessage = "Phone number must start with +380 and contain 13 characters +380XXXXXXXXX.")]
+        [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Внесіть Email")]
-        [RegularExpression(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", ErrorMessage = "Некоректний формат Email")]
-        [EmailAddress(ErrorMessage = "Email має містити @ та .")]
+        [Required(ErrorMessage = "Enter Email")]
+        [RegularExpression(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", ErrorMessage = "Incorrect Email Format")]
+        [EmailAddress(ErrorMessage = "Email must contain @ and .")]
         [Display(Name = "Email")]
         public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Внесіть пароль")]
-        [MinLength(3, ErrorMessage = "Пароль має містити від 3 символів")]
+        [Required(ErrorMessage = "Enter password")]
+        [MinLength(3, ErrorMessage = "Password must contain at least 3 characters")]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         public string? Password { get; set; }
 
-        [Required(ErrorMessage = "Внесіть пароль повторно")]
+        [Required(ErrorMessage = "Re-enter password")]
         [DataType(DataType.Password)]
-        [Display(Name = "Підтвердіть пароль")]
-        [Compare("Password", ErrorMessage = "Паролі мають збігатися")]
+        [Display(Name = "Confirm Password")]
+        [Compare("Password", ErrorMessage = "Passwords must match")]
         public string? ConfirmPassword { get; set; }
 
     }

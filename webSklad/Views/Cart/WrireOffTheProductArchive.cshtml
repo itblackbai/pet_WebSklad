@@ -1,0 +1,289 @@
+﻿@model List<IGrouping<int, webSklad.Models.Cart>>
+
+
+<div class="invoice-info">
+    <title>Архів накладних на списання</title>
+
+    <body>
+        <h2>Архів накладних на списання</h2>
+
+        <input type="text" id="invoiceFilter" placeholder="Фільтрувати за № " />
+        <label for="startDate">Пошук за датою:</label>
+        <input type="date" id="startDate">
+        <input type="text" id="shoppostinfonameFilter" placeholder="Фільтрувати за фірмою" />
+        <input type="text" id="fopnameFilter" placeholder="Фільтрувати за фопом" />
+        <input type="text" id="fopaccountFilter" placeholder="Фільтрувати за рахунком" />
+
+
+
+
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>№ накладної</th>
+                        <th>Дата створення</th>
+                        <th>Фірма</th>
+                        <th>Фоп</th>
+                        <th>Рахунок</th>
+                        <th>Статус оплати</th>
+                        <th>Показати товари</th>
+                        <th>Редагувати</th>
+                        <td>Видалити</td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in Model)
+                    {
+                        var cartId = group.Key; // Отримання ідентифікатора замовлення
+                        var invoice = group.FirstOrDefault()?.Invoice;
+                        var totalAmount = group.Sum(c => c.Subtotal);
+
+                        <tr class="@(invoice?.IsPayment == true ? "paid-invoice" : "") invoiceRow">
+                            <td>@(invoice?.Name)</td>
+                            <td>@(invoice?.DateTime)</td>
+                            <td>@(invoice?.PostInfo?.Name)</td>
+                            <td>@(invoice?.PostFop?.NameOfFop)</td>
+                            <td>@(invoice?.PostFop?.Account)</td>
+                            <td>
+                                <input type="checkbox" @(invoice?.IsPayment == true ? "checked" : "") data-invoice-id="@(invoice?.Id)" />
+                            </td>
+
+                            <td><button class="showProductsButton">Показати товари</button></td>
+                            <td>
+                                <p>Must be edit, doesn't work now</p>
+                                <button class="editInvoiceButton" data-invoice-id="@invoice.Id">Редагувати</button>
+                            </td>
+                            <td>
+                                <button class="deleteCartButton" data-cart-id="@cartId">Видалити</button>
+                            </td>
+
+                        </tr>
+
+                        <tr class="productTableContainer" style="display: none;" data-invoice-name="@(invoice?.Name.ToLower())">
+
+                            <td colspan="6">
+                                <h3>Товари у накладній</h3>
+                                <h4><strong>Загальна сума :  @totalAmount .грн</strong></h4>
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>Код</th>
+                                            <th>Назва</th>
+                                            <th>Кількість</th>
+                                            <th>Продажна ціна</th>
+                                            <th>Штрих код</th>
+                                            <th>Штрихкод внутрішній</th>
+                                            <th>Сума</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var cart in group)
+                                        {
+                                            <tr class="productRow">
+                                                <td>@cartId</td>
+                                                <td>@cart.Product.Sku</td>
+                                                <td>@cart.Product.ProductName</td>
+                                                <td>@cart.Quantity</td>
+                                                <td>@cart.Price</td>
+                                                <td>@cart.BarCode</td>
+                                                <td>@cart.BarCodeOwn</td>
+                                                <td>@cart.Subtotal</td>
+                                                <td>
+                                                    <p>Must be edit</p>
+                                                </td>
+                                                <td>
+                                                    <p>Must be delete, doesn't work now</p>
+                                                    <button class="deleteProductFromInvoiceButton" data-cart-id="@cartId">Видалити</button>
+                                                </td>
+
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Немає збережених накладних.</p>
+        }
+
+    </body>
+
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function convertDateToCorrectFormat(dateString) {
+            // Split the date string by dots and rearrange it to the correct format (YYYY-MM-DD)
+            const [day, month, year] = dateString.split('.');
+            return `${year}-${month}-${day}`;
+        }
+        function savePaymentStatus(invoiceId, isPayment) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SavePaymentStatus", "Cart")',
+                data: { invoiceId: invoiceId, isPayment: isPayment },
+                success: function (data) {
+                    console.log('Payment status saved successfully.');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to save payment status.');
+                }
+            });
+        }
+
+        // Checkbox click event handler
+        $('input[type="checkbox"]').on('click', function () {
+            var isChecked = $(this).prop('checked');
+            var invoiceId = $(this).data('invoice-id');
+
+            savePaymentStatus(invoiceId, isChecked);
+        });
+        function deleteCart(cartId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteCart", "Cart")',
+                data: { cartId: cartId },
+                success: function (data) {
+                    // Reload the page after successful deletion
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to delete the cart.');
+                }
+            });
+        }
+
+        // Event handler for delete button click
+        $('.deleteCartButton').on('click', function () {
+            var cartId = $(this).data('cart-id');
+            if (confirm("Are you sure you want to delete this cart?")) {
+                deleteCart(cartId);
+            }
+        });
+
+
+
+
+        function deleteProductFromInvoice(cartId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteProductFromInvoice", "Cart")',
+                data: { cartId: cartId },
+                success: function (data) {
+                    // Reload the page after successful deletion
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to delete the product from invoice.');
+                }
+            });
+        }
+
+        $('.deleteProductFromInvoiceButton').on('click', function () {
+            var cartId = $(this).data('cart-id');
+            if (confirm("Are you sure you want to delete this product?")) {
+                deleteProductFromInvoice(cartId); // Corrected function call
+            }
+        });
+
+
+
+
+
+        function editInvoice(invoiceId) {
+            // Redirect to the EditInvoice action with the specified invoiceId
+            window.location.href = '@Url.Action("EditInvoice", "Product")' + '?invoiceId=' + invoiceId;
+        }
+
+        // Event handler for the edit button click
+        $('.editInvoiceButton').on('click', function () {
+            var invoiceId = $(this).data('invoice-id');
+            editInvoice(invoiceId);
+        });
+        function applyFilters() {
+            var invoiceValue = $("#invoiceFilter").val().toLowerCase();
+            var shopPostInfoNameValue = $("#shoppostinfonameFilter").val().toLowerCase();
+            var fopNameValue = $("#fopnameFilter").val().toLowerCase();
+            var fopAccountValue = $("#fopaccountFilter").val().toLowerCase();
+
+
+            var startDateValue = $("#startDate").val();
+            var endDateValue = $("#endDate").val();
+
+            var startDate = startDateValue ? new Date(convertDateToCorrectFormat(startDateValue)) : null;
+            var endDate = endDateValue ? new Date(convertDateToCorrectFormat(endDateValue)) : null;
+
+            $(".table tbody .invoiceRow").filter(function () {
+                var invoiceName = $(this).find("td:first-child").text().toLowerCase();
+                var shopPostInfoName = $(this).find("td:nth-child(3)").text().toLowerCase();
+                var fopName = $(this).find("td:nth-child(4)").text().toLowerCase();
+                var fopAccount = $(this).find("td:nth-child(5)").text().toLowerCase();
+
+                var hasInvoice = invoiceName.includes(invoiceValue);
+                var hasShopPostInfoName = shopPostInfoName.includes(shopPostInfoNameValue);
+                var hasFopName = fopName.includes(fopNameValue);
+                var hasFopAccount = fopAccount.includes(fopAccountValue);
+
+                var creationDateString = $(this).find("td:nth-child(2)").text();
+                var creationDate = new Date(creationDateString.replace(/(\d{2}).(\d{2}).(\d{4})/, "$2/$1/$3"));
+
+                var hasStartDate = !startDate || (creationDate >= startDate && creationDate <= new Date(startDateValue + " 23:59:59"));
+                var hasEndDate = !endDate || (creationDate <= endDate && creationDate >= new Date(endDateValue + " 00:00:00"));
+
+                $(this).toggle(
+                    hasInvoice && hasShopPostInfoName && hasFopName && hasFopAccount && hasStartDate && hasEndDate
+                );
+            });
+
+            $(".productRow").each(function () {
+                var parentInvoiceName = $(this).closest(".productTableContainer").data("invoice-name");
+                var showProduct =
+                    parentInvoiceName.includes(invoiceValue) &&
+                    parentInvoiceName.includes(shopPostInfoNameValue) &&
+                    parentInvoiceName.includes(fopNameValue) &&
+                    parentInvoiceName.includes(fopAccountValue);
+
+                var productCreationDateString = $(this).closest(".invoiceRow").find("td:nth-child(2)").text();
+                var productCreationDate = new Date(productCreationDateString.replace(/(\d{2}).(\d{2}).(\d{4})/, "$2/$1/$3"));
+
+                var hasStartDate = !startDate || (productCreationDate >= startDate && productCreationDate <= new Date(startDateValue + " 23:59:59"));
+                var hasEndDate = !endDate || (productCreationDate <= endDate && productCreationDate >= new Date(endDateValue + " 00:00:00"));
+
+                $(this).toggle(showProduct && hasStartDate && hasEndDate);
+            });
+        }
+
+        // Function to show/hide the product table
+        $(".showProductsButton").click(function () {
+            $(this).closest("tr").next(".productTableContainer").toggle();
+        });
+
+        // Apply filters on keyup for all filter input fields
+        $("#invoiceFilter, #shoppostinfonameFilter, #fopnameFilter, #fopaccountFilter").on("keyup", function () {
+            applyFilters();
+        });
+        $("#startDate, #endDate").on("change", function () {
+            applyFilters();
+        });
+        applyFilters();
+
+    });
+</script>

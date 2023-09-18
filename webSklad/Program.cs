@@ -24,6 +24,9 @@ namespace webSklad
                 .AddEntityFrameworkStores<WebSkladContext>();
 
 
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
+
             //Interfaces && Repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -32,7 +35,8 @@ namespace webSklad
             builder.Services.AddScoped<ISRRepository, SRRepository>();
             builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
+            builder.Services.AddScoped<ICartRepository, CartRepository>();   
+            builder.Services.AddScoped<ICartRegisterRepository, CartRegisterRepository>();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -73,8 +77,11 @@ namespace webSklad
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
